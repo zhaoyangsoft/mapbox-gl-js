@@ -12,7 +12,11 @@ window.mapboxglVersions.push(version);
 
 function register(Benchmark) {
     window.mapboxglBenchmarks[Benchmark.name] = window.mapboxglBenchmarks[Benchmark.name] || {};
-    window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark();
+    // vs. 'mapbox://styles/mapbox/streets-v10'
+    // or 'mapbox://styles/mapbox/streets-v9'
+    // or 'http://localhost:9966/debug/streets-v8-dev-test.json'
+    // or 'http://localhost:9966/debug/streets-v11-expressions.json'
+    window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark('http://localhost:9966/debug/streets-v8-dev-test.json');
 }
 
 import Layout from './benchmarks/layout';
@@ -54,4 +58,3 @@ setTimeout(() => {
 }, 0);
 
 export default mapboxgl;
-

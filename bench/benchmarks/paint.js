@@ -13,8 +13,9 @@ export default class Paint extends Benchmark {
                 zoom,
                 width,
                 height,
-                center: [-77.032194, 38.912753],
-                style: 'mapbox://styles/mapbox/streets-v9'
+                center: [2.34793, 48.85602],
+                style: this.styleURL,
+                fadeDuration: 0
             });
         })).then(maps => {
             this.maps = maps;
@@ -27,6 +28,13 @@ export default class Paint extends Benchmark {
             map._sourcesDirty = true;
             map._render();
         }
+        // for (const map of this.maps) {
+        //     // Block until all GL commands have finished so that
+        //     // time spent in the GPU isn't split across bench runs
+        //     map.painter.context.gl.finish();
+        //     // Hack to force collision detection to happen on every frame
+        //     map.style.placement.commitTime = 0;
+        // }
     }
 
     teardown() {

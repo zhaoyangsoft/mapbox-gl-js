@@ -25,10 +25,12 @@ export default class Layout extends Benchmark {
 
     tileIDs(): Array<OverscaledTileID> {
         return [
-            new OverscaledTileID(12, 0, 12, 655, 1583),
-            new OverscaledTileID(8, 0, 8, 40, 98),
-            new OverscaledTileID(4, 0, 4, 3, 6),
-            new OverscaledTileID(0, 0, 0, 0, 0)
+            //new OverscaledTileID(16, 0, 16, 33195, 22545)
+            //new OverscaledTileID(15, 0, 15, 29105, 12902)
+            new OverscaledTileID(12, 0, 12, 2074, 1409)
+            // new OverscaledTileID(8, 0, 8, 129, 88),
+            // new OverscaledTileID(4, 0, 4, 8, 5),
+            // new OverscaledTileID(0, 0, 0, 0, 0)
         ];
     }
 
@@ -37,7 +39,7 @@ export default class Layout extends Benchmark {
     }
 
     fetchStyle(): Promise<StyleSpecification> {
-        return fetch(normalizeStyleURL(`mapbox://styles/mapbox/streets-v9`))
+        return fetch(normalizeStyleURL(this.styleURL))
             .then(response => response.json());
     }
 
