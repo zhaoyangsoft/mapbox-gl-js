@@ -131,24 +131,35 @@ function sameOrigin(url) {
 const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
 
 export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement>): Cancelable {
+    const img = new Image();
+    const url = requestParameters.url;
+    if (!sameOrigin(url)) {
+        img.crossOrigin = 'Anonymous';
+    }
+    img.onload = (e) => callback(null, img);
+    img.cancel = () => { img.src = transparentPngUrl; }
+    img.src = url;
+    return img;
+
     // request the image with XHR to work around caching issues
     // see https://github.com/mapbox/mapbox-gl-js/issues/1470
-    return getArrayBuffer(requestParameters, (err, imgData) => {
-        if (err) {
-            callback(err);
-        } else if (imgData) {
-            const img: HTMLImageElement = new window.Image();
-            const URL = window.URL || window.webkitURL;
-            img.onload = () => {
-                callback(null, img);
-                URL.revokeObjectURL(img.src);
-            };
-            const blob: Blob = new window.Blob([new Uint8Array(imgData.data)], { type: 'image/png' });
-            (img: any).cacheControl = imgData.cacheControl;
-            (img: any).expires = imgData.expires;
-            img.src = imgData.data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
-        }
-    });
+    // return getArrayBuffer(requestParameters, (err, imgData) => {
+    //     if (err) {
+    //         callback(err);
+    //     } else if (imgData) {
+    //         const img: HTMLImageElement = new window.Image();
+    //         const URL = window.URL || window.webkitURL;
+    //         img.onload = () => {
+    //             callback(null, img);
+    //             URL.revokeObjectURL(img.src);
+    //         };
+    //         const blob: Blob = new window.Blob([new Uint8Array(imgData.data)], { type: 'image/png' });
+    //         console.log(imgData.cacheControl, imgData.expires);
+    //         (img: any).cacheControl = imgData.cacheControl;
+    //         (img: any).expires = imgData.expires;
+    //         img.src = imgData.data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
+    //     }
+    // });
 };
 
 export const getVideo = function(urls: Array<string>, callback: Callback<HTMLVideoElement>): Cancelable {
