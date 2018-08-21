@@ -10,6 +10,7 @@ import tileCover from '../util/tile_cover';
 import { CanonicalTileID, UnwrappedTileID } from '../source/tile_id';
 import EXTENT from '../data/extent';
 import { vec4, mat4, mat2 } from 'gl-matrix';
+import assert from 'assert';
 
 /**
  * A single transform, generally used for a single tile to be
@@ -621,6 +622,39 @@ class Transform {
         const p = [coord.column * this.tileSize, coord.row * this.tileSize, 0, 1];
         const topPoint = vec4.transformMat4(p, p, this.pixelMatrix);
         return topPoint[3] / this.cameraToCenterDistance;
+    }
+
+    getCameraPoint() {
+        const pitch = this._pitch;
+        const latOffset = Math.tan(pitch) * this.cameraToCenterDistance;
+        return this.centerPoint.add(new Point(0, latOffset));
+    }
+
+    getCameraQueryGeometry(queryGeometry: Array<Point>): Array<Point> {
+        assert(queryGeometry.length === 1 || queryGeometry.length === 5);
+        const c = this.getCameraPoint();
+
+        if (queryGeometry.length === 1) {
+            return [queryGeometry[0], c];
+        } else {
+            let minX = c.x;
+            let minY = c.y;
+            let maxX = c.x;
+            let maxY = c.y;
+            for (const p of queryGeometry) {
+                minX = Math.min(minX, p.x);
+                minY = Math.min(minY, p.y);
+                maxX = Math.max(maxX, p.x);
+                maxY = Math.max(maxY, p.y);
+            }
+            return [
+                new Point(minX, minY),
+                new Point(maxX, minY),
+                new Point(maxX, maxY),
+                new Point(minX, maxY),
+                new Point(minX, minY)
+            ];
+        }
     }
 }
 
