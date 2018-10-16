@@ -1656,6 +1656,7 @@ class Map extends Camera {
             showOverdrawInspector: this._showOverdrawInspector,
             rotating: this.isRotating(),
             zooming: this.isZooming(),
+            moving: this.isMoving(),
             fadeDuration: this._fadeDuration
         });
 
