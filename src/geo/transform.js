@@ -10,7 +10,6 @@ import tileCover from '../util/tile_cover';
 import { CanonicalTileID, UnwrappedTileID } from '../source/tile_id';
 import EXTENT from '../data/extent';
 import { vec4, mat4, mat2 } from 'gl-matrix';
-import assert from 'assert';
 
 /**
  * A single transform, generally used for a single tile to be
@@ -626,12 +625,11 @@ class Transform {
 
     getCameraPoint() {
         const pitch = this._pitch;
-        const latOffset = Math.tan(pitch) * this.cameraToCenterDistance;
+        const latOffset = Math.tan(pitch) * (this.cameraToCenterDistance || 1);
         return this.centerPoint.add(new Point(0, latOffset));
     }
 
     getCameraQueryGeometry(queryGeometry: Array<Point>): Array<Point> {
-        assert(queryGeometry.length === 1 || queryGeometry.length === 5);
         const c = this.getCameraPoint();
 
         if (queryGeometry.length === 1) {

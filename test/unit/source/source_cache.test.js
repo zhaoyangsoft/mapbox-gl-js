@@ -6,6 +6,7 @@ import { OverscaledTileID } from '../../../src/source/tile_id';
 import Transform from '../../../src/geo/transform';
 import LngLat from '../../../src/geo/lng_lat';
 import Coordinate from '../../../src/geo/coordinate';
+import Point from '@mapbox/point-geometry';
 import { Event, ErrorEvent, Evented } from '../../../src/util/evented';
 import { extend } from '../../../src/util/util';
 import browser from '../../../src/util/browser';
@@ -1228,20 +1229,34 @@ test('SourceCache#clearTiles', (t) => {
 
 test('SourceCache#tilesIn', (t) => {
     t.test('graceful response before source loaded', (t) => {
+        const tr = new Transform();
+        tr.width = 512;
+        tr.height = 512;
+        tr._calcMatrices();
         const sourceCache = createSourceCache({ noLoad: true });
+        sourceCache.transform = tr;
         sourceCache.onAdd();
         t.same(sourceCache.tilesIn([
             new Coordinate(0.5, 0.25, 1),
             new Coordinate(1.5, 0.75, 1)
-        ]), []);
+        ], 10, tr), []);
 
         t.end();
     });
 
+    function round(queryGeometry) {
+        return queryGeometry.map((r) => {
+            return r.map((p) => {
+                return p.round();
+            });
+        });
+    }
+
     t.test('regular tiles', (t) => {
         const transform = new Transform();
-        transform.resize(511, 511);
+        transform.resize(512, 512);
         transform.zoom = 1;
+        transform.center = new LngLat(0, 1);
 
         const sourceCache = createSourceCache({
             loadTile: function(tile, callback) {
@@ -1262,10 +1277,11 @@ test('SourceCache#tilesIn', (t) => {
                     new OverscaledTileID(1, 0, 1, 0, 0).key
                 ]);
 
+                transform._calcMatrices();
                 const tiles = sourceCache.tilesIn([
-                    new Coordinate(0.5, 0.25, 1),
-                    new Coordinate(1.5, 0.75, 1)
-                ], 1);
+                    new Point(0, 0),
+                    new Point(512, 256)
+                ], 1, transform);
 
                 tiles.sort((a, b) => { return a.tile.tileID.canonical.x - b.tile.tileID.canonical.x; });
                 tiles.forEach((result) => { delete result.tile.uid; });
@@ -1273,12 +1289,12 @@ test('SourceCache#tilesIn', (t) => {
                 t.equal(tiles[0].tile.tileID.key, 1);
                 t.equal(tiles[0].tile.tileSize, 512);
                 t.equal(tiles[0].scale, 1);
-                t.deepEqual(tiles[0].queryGeometry, [[{x: 4096, y: 2048}, {x:12288, y: 6144}]]);
+                t.deepEqual(round(tiles[0].queryGeometry), [[{x: 4096, y: 4050}, {x:12288, y: 8146}]]);
 
                 t.equal(tiles[1].tile.tileID.key, 33);
                 t.equal(tiles[1].tile.tileSize, 512);
                 t.equal(tiles[1].scale, 1);
-                t.deepEqual(tiles[1].queryGeometry, [[{x: -4096, y: 2048}, {x: 4096, y: 6144}]]);
+                t.deepEqual(round(tiles[1].queryGeometry), [[{x: -4096, y: 4050}, {x: 4096, y: 8146}]]);
 
                 t.end();
             }
@@ -1302,8 +1318,9 @@ test('SourceCache#tilesIn', (t) => {
         sourceCache.on('data', (e) => {
             if (e.sourceDataType === 'metadata') {
                 const transform = new Transform();
-                transform.resize(512, 512);
+                transform.resize(1024, 1024);
                 transform.zoom = 2.0;
+                transform.center = new LngLat(0, 1);
                 sourceCache.update(transform);
 
                 t.deepEqual(sourceCache.getIds(), [
@@ -1314,9 +1331,9 @@ test('SourceCache#tilesIn', (t) => {
                 ]);
 
                 const tiles = sourceCache.tilesIn([
-                    new Coordinate(0.5, 0.25, 1),
-                    new Coordinate(1.5, 0.75, 1)
-                ], 1);
+                    new Point(0, 0),
+                    new Point(1024, 512)
+                ], 1, transform);
 
                 tiles.sort((a, b) => { return a.tile.tileID.canonical.x - b.tile.tileID.canonical.x; });
                 tiles.forEach((result) => { delete result.tile.uid; });
@@ -1324,12 +1341,12 @@ test('SourceCache#tilesIn', (t) => {
                 t.equal(tiles[0].tile.tileID.key, 2);
                 t.equal(tiles[0].tile.tileSize, 1024);
                 t.equal(tiles[0].scale, 1);
-                t.deepEqual(tiles[0].queryGeometry, [[{x: 4096, y: 2048}, {x:12288, y: 6144}]]);
+                t.deepEqual(round(tiles[0].queryGeometry), [[{x: 4096, y: 4050}, {x:12288, y: 8146}]]);
 
                 t.equal(tiles[1].tile.tileID.key, 34);
                 t.equal(tiles[1].tile.tileSize, 1024);
                 t.equal(tiles[1].scale, 1);
-                t.deepEqual(tiles[1].queryGeometry, [[{x: -4096, y: 2048}, {x: 4096, y: 6144}]]);
+                t.deepEqual(round(tiles[1].queryGeometry), [[{x: -4096, y: 4050}, {x: 4096, y: 8146}]]);
 
                 t.end();
             }
