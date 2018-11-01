@@ -722,6 +722,10 @@ var navigationMenuData = {
           name: 'Studio',
           description: 'Design custom maps',
           to: '/mapbox-studio/'
+        }, {
+          name: 'Atlas',
+          description: 'Maps and location on-premise',
+          to: '/atlas/'
         }],
         more: {
           title: 'View all products',
@@ -900,6 +904,9 @@ var navigationMenuData = {
       }, {
         name: 'Careers',
         to: '/jobs/'
+      }, {
+        name: 'Diversity & Inclusion',
+        to: '/diversity-inclusion/'
       }]
     }
   },
@@ -917,6 +924,9 @@ var navigationMenuData = {
     }, {
       name: 'Studio',
       to: '/mapbox-studio/'
+    }, {
+      name: 'Atlas',
+      to: '/atlas/'
     }],
     highlightedLinks: [{
       name: 'Pricing',
@@ -977,6 +987,9 @@ var navigationMenuData = {
     }, {
       name: 'Careers',
       to: '/careers/'
+    }, {
+      name: 'Diversity & Inclusion',
+      to: '/diversity-inclusion/'
     }, {
       name: 'Team',
       to: '/about/team/'
@@ -1044,7 +1057,7 @@ var CompanyMenu = function (_React$Component) {
         _extends({}, this.props, { name: 'Company' }),
         React__default.createElement(
           'div',
-          { className: 'shell-w180-mm shell-py30 shell-px30' },
+          { className: 'shell-py30 shell-px30' },
           React__default.createElement(
             'ul',
             null,
@@ -2735,10 +2748,6 @@ var MetaTagger = function (_React$PureComponent) {
         metaItems.push({ name: 'twitter:card', content: 'summary_large_image' }, { name: 'twitter:image', content: props.imageUrl });
       } else {
         metaItems.push({ name: 'twitter:card', content: 'summary' }, { name: 'twitter:image', content: props.imageUrlThumbnail });
-      }
-
-      if (process.env.DEPLOY_ENV !== 'production') {
-        metaItems.push({ name: 'robots', content: 'noindex' });
       }
 
       return React__default.createElement(Helmet__default, { title: suffixedTitle, meta: metaItems });
