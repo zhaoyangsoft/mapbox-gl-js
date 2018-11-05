@@ -24,7 +24,7 @@ function drawDebug(painter: Painter, sourceCache: SourceCache, coords: Array<Ove
     }
 }
 
-function drawDebugTile(painter, sourceCache, coord) {
+function drawDebugTile(painter, sourceCache, coord: OverscaledTileID) {
     const context = painter.context;
     const gl = context.gl;
 
@@ -40,7 +40,12 @@ function drawDebugTile(painter, sourceCache, coord) {
         debugUniformValues(posMatrix, Color.red), id,
         painter.debugBuffer, painter.tileBorderIndexBuffer, painter.debugSegments);
 
-    const vertices = createTextVerticies(coord.canonical.toString(), 50, 200, 5);
+    let tileIdText = coord.canonical.toString();
+    if (coord.overscaledZ !== coord.canonical.z) {
+        tileIdText += ` => ${coord.overscaledZ}`;
+    }
+
+    const vertices = createTextVertices(tileIdText, 50, 200, 5);
     const debugTextArray = new PosArray();
     const debugTextIndices = new LineIndexArray();
     for (let v = 0; v < vertices.length; v += 2) {
