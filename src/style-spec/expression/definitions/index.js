@@ -199,6 +199,11 @@ CompoundExpression.register(expressions, {
         [],
         (ctx) => ctx.globals.lineProgress || 0
     ],
+    'accumulated': [
+        ValueType,
+        [],
+        (ctx) => ctx.globals.accumulated
+    ],
     '+': [
         NumberType,
         varargs(NumberType),
