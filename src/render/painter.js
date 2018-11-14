@@ -401,6 +401,19 @@ class Painter {
             }
         }
 
+        // for (const id in sourceCaches) {
+        //     const source = sourceCaches[id]._source;
+        //     if (source.type === 'raster') {
+        //         const queued = source._textureQueue.pop();
+        //         if (queued) {
+        //             source.createTexture(queued.tile, queued.img);
+        //         }
+        //         if (source._textureQueue.length > 0) {
+        //             this.context.setDirty();
+        //         }
+        //     }
+        // }
+
         this.setCustomLayerDefaults();
     }
 
