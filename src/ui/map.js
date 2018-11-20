@@ -1655,15 +1655,15 @@ class Map extends Camera {
         let continueRenderingTextures = false;
         const queued = this.style.textureQueue.shift();
         if (queued) {
-          const {tile, img, callback} = queued;
-          // do not upload aborted tiles to the GPU
-          if (tile && !tile.aborted) {
-              callback(tile, img);
-          }
+            const {tile, img, callback} = queued;
+            // do not upload aborted tiles to the GPU
+            if (tile && !tile.aborted) {
+                callback(tile, img);
+            }
         }
 
         if (this.style.textureQueue.length > 0) {
-          continueRenderingTextures = true;
+            continueRenderingTextures = true;
         }
 
         // Actually draw
