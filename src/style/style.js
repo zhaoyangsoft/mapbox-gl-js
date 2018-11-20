@@ -115,7 +115,7 @@ class Style extends Evented {
     _removedLayers: {[string]: StyleLayer};
     _updatedPaintProps: {[layer: string]: true};
     _layerOrderChanged: boolean;
-    textureQueue: Array<Object>;
+    _textureQueue: Array<Object>;
 
     crossTileSymbolIndex: CrossTileSymbolIndex;
     pauseablePlacement: PauseablePlacement;
@@ -142,7 +142,7 @@ class Style extends Evented {
         this.sourceCaches = {};
         this.zoomHistory = new ZoomHistory();
         this._loaded = false;
-        this.textureQueue = [];
+        this._textureQueue = [];
 
         this._resetUpdates();
 
