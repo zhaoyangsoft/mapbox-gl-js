@@ -3,7 +3,7 @@
 import Benchmark from '../lib/benchmark';
 import createStyleLayer from '../../src/style/create_style_layer';
 import deref from '../../src/style-spec/deref';
-import { normalizeStyleURL } from '../../src/util/mapbox';
+import fetchStyle from '../lib/fetch_style';
 
 export default class StyleLayerCreate extends Benchmark {
     style: string;
@@ -15,8 +15,7 @@ export default class StyleLayerCreate extends Benchmark {
     }
 
     setup(): Promise<void> {
-        return fetch(normalizeStyleURL(this.style))
-            .then(response => response.json())
+        return fetchStyle(this.style)
             .then(json => { this.layers = deref(json.layers); });
     }
 

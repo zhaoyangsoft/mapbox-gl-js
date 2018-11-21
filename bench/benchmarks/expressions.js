@@ -6,7 +6,7 @@ import spec from '../../src/style-spec/reference/latest';
 import convertFunction from '../../src/style-spec/function/convert';
 import { isFunction, createFunction } from '../../src/style-spec/function';
 import { createPropertyExpression } from '../../src/style-spec/expression';
-import { normalizeStyleURL } from '../../src/util/mapbox';
+import fetchStyle from '../lib/fetch_style';
 
 import type {StylePropertySpecification} from '../../src/style-spec/style-spec';
 import type {StylePropertyExpression} from '../../src/style-spec/expression';
@@ -27,8 +27,7 @@ class ExpressionBenchmark extends Benchmark {
     }
 
     setup() {
-        return fetch(normalizeStyleURL(this.style))
-            .then(response => response.json())
+        return fetchStyle(this.style)
             .then(json => {
                 this.data = [];
 

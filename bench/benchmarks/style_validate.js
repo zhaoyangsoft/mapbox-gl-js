@@ -2,7 +2,7 @@
 
 import Benchmark from '../lib/benchmark';
 import validateStyle from '../../src/style-spec/validate_style.min';
-import { normalizeStyleURL } from '../../src/util/mapbox';
+import fetchStyle from '../lib/fetch_style';
 
 export default class StyleValidate extends Benchmark {
     style: string;
@@ -14,8 +14,7 @@ export default class StyleValidate extends Benchmark {
     }
 
     setup(): Promise<void> {
-        return fetch(normalizeStyleURL(this.style))
-            .then(response => response.json())
+        return fetchStyle(this.style)
             .then(json => { this.json = json; });
     }
 
